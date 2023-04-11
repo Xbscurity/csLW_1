@@ -1,0 +1,304 @@
+class Program
+{
+
+    public static void Main(string[] args)
+    {
+        int choice = -1;
+        while (choice != 4)
+        {
+            Console.WriteLine("\nWhich objective do you want to perfom:");
+        Console.WriteLine("1 - Objective with getting the array of indexes of max elements");
+        Console.WriteLine("2 - Objective with getting the array of max elements in each line of the array\"");
+        Console.WriteLine("3 - Objective with working with List<>");
+        Console.WriteLine("4 - Exit the program");
+      
+        while (!int.TryParse(Console.ReadLine(), out choice) || choice >= 5 || choice <= 0)
+        {
+            Console.WriteLine("Wrong Format, only numbers are allowed in range of 1 to 4");
+        }
+            switch (choice)
+            {
+                case 1:
+                    {
+                        int[] result1 = GetMaxIndexArray();
+                        Console.WriteLine("Array of the indexes of the max elements in the array:");
+                        for (int i = 0; i < result1.Length; i++)
+                        {
+                            Console.Write($"{result1[i]} ");
+                        }
+                        break;
+                    }
+                case 2:
+                    {
+                        int[] result2 = GetMaxNumbersArray();
+                        Console.WriteLine("Max elements in each line of your array:");
+                        for (int i = 0; i < result2.Length; i++)
+                        {
+                            Console.Write($"{result2[i]} ");
+                        }
+                        break;
+                    }
+                case 3:
+                    {
+                        WorkingWithList();
+                        break;
+                    }
+            }
+        }
+
+    }
+    static int[] GetMaxNumbersArray()
+    {
+        int lines = 5;
+        int columns = 6;
+        int[,] a = new int[lines, columns];
+        int[] maxNumbers = new int[lines];
+        Random rd = new Random();
+        for (int i = 0; i < a.GetLength(0); i++)
+        {
+            for (int j = 0; j < a.GetLength(1); j++)
+            {
+                a[i, j] = rd.Next(10);
+            }
+        }
+        Console.WriteLine("Your array is:");
+        for (int i = 0; i < a.GetLength(0); i++)
+        {
+            for (int j = 0; j < a.GetLength(1); j++)
+            {
+                Console.Write($"{a[i, j]} ");
+            }
+            Console.WriteLine("\n");
+        }
+
+        for (int i = 0; i < a.GetLength(0); i++)
+        {
+            maxNumbers[i] = a[i, 0];
+            for (int j = 0; j < a.GetLength(1); j++)
+            {
+                if (maxNumbers[i] < a[i, j])
+                {
+                    maxNumbers[i] = a[i, j];
+                }
+            }
+        }
+        return maxNumbers;
+    }
+    static int[] GetMaxIndexArray()
+    {
+        int[] a;
+        int[] maxIndexArray;
+
+        int length;
+        Console.WriteLine("Enter the number of elements of your array");
+        while (!int.TryParse(Console.ReadLine(), out length) || length >= 15 || length <= 0)
+        {
+            Console.WriteLine("Wrong Format, only numbers are allowed in range of 1 to 15");
+        }
+        a = new int[length];
+        maxIndexArray = new int[length];
+        Console.WriteLine($"Enter your {length} elements:");
+        for (int i = 0; i < length; i++)
+        {
+            Console.Write($"a[{i}] = ");
+            while (!int.TryParse(Console.ReadLine(), out a[i]))
+            {
+                Console.WriteLine("Wrong Format, only numbers are allowed");
+            }
+        }
+        Console.WriteLine("Your array is:");
+        for (int i = 0; i < length; i++)
+        {
+            Console.Write($"{a[i]} ");
+        }
+        Console.WriteLine();
+        int newSizeIndexArray = 1;
+        int maxNumber = a[0];
+        maxIndexArray[0] = 0;
+        for (int i = 1; i <= length - 1; i++)
+        {
+            if (maxNumber == a[i]) // if the element is equal to the maximum element, its index will be located in the next cell of the maxIndex array
+            {
+                maxIndexArray[newSizeIndexArray] = i;
+                newSizeIndexArray++;
+
+            }
+            if (maxNumber < a[i]) // if the element is greater than the previous maximum, the array will be cleared for the next indexes of the max elements
+            {
+                Array.Clear(maxIndexArray);
+                newSizeIndexArray = 1;
+                maxNumber = a[i];
+                maxIndexArray[0] = i;
+
+
+            }
+
+        }
+        Array.Resize(ref maxIndexArray, newSizeIndexArray); // removing extra space in the array that hasn't been used
+        return maxIndexArray;
+    }
+    static void WorkingWithList()
+    {
+        List<Buyings> list = new List<Buyings>
+        {
+            new Buyings("Milk", 100),
+            new Buyings("Cookies", 150),
+            new Buyings("Car", 10000)
+        };
+        PrintList();
+        PrintListAbove1000();
+        int choice;
+        do
+        {
+            Console.WriteLine("\nWhich operation do you want to perfom:");
+            Console.WriteLine("1 - Add the element to the current position");
+            Console.WriteLine("2 - Remove the element from the current position");
+            Console.WriteLine("3 - Print the whole list");
+            Console.WriteLine("4 - Print the list where product prices above 1000");
+            Console.WriteLine("5 - Back");
+            while (!int.TryParse(Console.ReadLine(), out choice) || choice > 5 || choice <= 0)
+            {
+                Console.WriteLine("Wrong Format, only numbers are allowed in range of 1 to 5");
+            }
+            int choiceOfElementPosition;
+            switch (choice)
+            {
+                
+                case 1:
+                    {
+                        Console.WriteLine("Enter the index of the element of the list to add");
+             
+                        while (!int.TryParse(Console.ReadLine(), out choiceOfElementPosition) || choiceOfElementPosition <= 0 || choiceOfElementPosition > list.Count + 1)
+                        {
+                            Console.WriteLine($"Wrong Format, only numbers are allowed in range of 1 to {list.Count + 1}");
+                        }
+                        Console.WriteLine("Enter the name of your new item:");
+                        string? itemName;
+                        while ((itemName = Console.ReadLine()) == string.Empty)
+                        {
+                            Console.WriteLine("The name of the item cannot be empty");
+                        };
+                        Console.WriteLine("Enter the cost of your new item:");
+                        int itemCost;
+                        while (!int.TryParse(Console.ReadLine(), out itemCost) || itemCost <= 0)
+                        {
+                            Console.WriteLine("Wrong Format, only positive numbers are allowed");
+                        }
+                        list.Insert(choiceOfElementPosition - 1, new Buyings(itemName, itemCost));
+                        break;
+                    }
+                case 2:
+                    {
+                        Console.WriteLine("Enter the index of the element of the list to remove");
+
+                        while (!int.TryParse(Console.ReadLine(), out choiceOfElementPosition) || choiceOfElementPosition <= 0 || choiceOfElementPosition > list.Count)
+                        {
+                            Console.WriteLine($"Wrong Format, only numbers are allowed in range of 1 to {list.Count}");
+                        }
+                        Console.WriteLine($"\n{list[choiceOfElementPosition - 1]} was deleted");
+                        list.RemoveAt(choiceOfElementPosition - 1);
+                        break;
+                    }
+                case 3:
+                    {
+                        PrintList();
+                        break;
+                    }
+                case 4:
+                    {
+                        PrintListAbove1000();
+                        break;
+                    }
+                case 5:
+                    {
+
+                        break;
+                    }
+
+            }
+        } while (choice != 5);
+        void PrintListAbove1000()
+        {
+            Console.WriteLine("\n\nList where product prices above 1000");
+            for (int i = 0; i < list.Count; i++)
+            {
+                if (list[i].Prices.Price >= 1000)
+                {
+                    Console.WriteLine($"{i + 1}) {list[i]}");
+                }
+            }
+            Console.WriteLine();
+        }
+        void PrintList()
+        {
+            Console.WriteLine("\n\nBuying list:");
+            for (int i = 0; i < list.Count; i++)
+            {
+                Console.WriteLine($"{i + 1}) {list[i]}");
+            }
+            Console.WriteLine();
+        }
+    }
+}
+struct Product
+{
+    string? name;
+    public string? Name
+    {
+        get => name; set
+        {
+            if (value != null)
+            {
+                name = value;
+            }
+            else
+            {
+                throw new Exception("Name can't be null");
+            }
+        }
+    }
+
+    public override string ToString()
+    {
+        return $"{name}";
+    }
+}
+struct Prices
+{
+    int price;
+    public int Price
+    {
+        get => price;
+        set
+        {
+            if (price >= 0)
+            {
+                price = value;
+            }
+            else
+            {
+                throw new Exception("Price can't be below zero");
+            }
+        }
+    }
+}
+struct Buyings
+{
+    Product product;
+    public Product Product { get => product; }
+    Prices prices;
+    public Prices Prices { get => prices; }
+
+    public Buyings(string? name, int price)
+    {
+        product = new();
+        prices = new();
+        product.Name = name;
+         prices.Price = price;
+    }
+    public override string ToString()
+    {
+        return $"[{product.Name}] [{prices.Price}]";
+    }
+
+}
